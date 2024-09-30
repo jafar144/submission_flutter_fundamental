@@ -33,27 +33,32 @@ class _DetailScreenState extends State<DetailScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Stack(children: [
-              Image.network(
-                widget.restaurant.pictureId,
-                fit: BoxFit.cover,
-                height: 250,
-              ),
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.arrow_back),
+            Stack(
+              children: [
+                Hero(
+                  tag: widget.restaurant.pictureId,
+                  child: Image.network(
+                    widget.restaurant.pictureId,
+                    fit: BoxFit.cover,
+                    height: 250,
+                  ),
+                ),
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: const Icon(Icons.arrow_back),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ]),
+              ],
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(

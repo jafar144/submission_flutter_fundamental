@@ -60,12 +60,15 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.network(
-              restaurant.pictureId,
-              height: 130,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, _) =>
-                  const Center(child: Icon(Icons.error)),
+            Hero(
+              tag: restaurant.pictureId,
+              child: Image.network(
+                restaurant.pictureId,
+                height: 130,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, _) =>
+                    const Center(child: Icon(Icons.error)),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
