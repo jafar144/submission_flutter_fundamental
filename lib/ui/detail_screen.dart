@@ -33,11 +33,27 @@ class _DetailScreenState extends State<DetailScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Image.network(
-              widget.restaurant.pictureId,
-              fit: BoxFit.cover,
-              height: 250,
-            ),
+            Stack(children: [
+              Image.network(
+                widget.restaurant.pictureId,
+                fit: BoxFit.cover,
+                height: 250,
+              ),
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back),
+                    ),
+                  ),
+                ),
+              ),
+            ]),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -192,26 +208,29 @@ class _DetailScreenState extends State<DetailScreen>
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        RawScrollbar(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(
-                                    top: 14.0,
-                                    bottom: 24.0,
-                                  ),
-                                  child: Text(
-                                    "About",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 36.0),
+                          child: RawScrollbar(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(
+                                      top: 14.0,
+                                      bottom: 24.0,
+                                    ),
+                                    child: Text(
+                                      "About",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Text(widget.restaurant.description),
-                              ],
+                                  Text(widget.restaurant.description),
+                                ],
+                              ),
                             ),
                           ),
                         ),
