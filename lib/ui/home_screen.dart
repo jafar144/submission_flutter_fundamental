@@ -21,15 +21,29 @@ class HomeScreen extends StatelessWidget {
           future: DefaultAssetBundle.of(context)
               .loadString('assets/restaurant.json'),
           builder: (context, snapshot) {
-            final List<Restaurant> restaurants =
-                restaurantResponseFromJson(snapshot.data.toString())
-                    .restaurants;
-            return ListView.builder(
-              itemCount: restaurants.length,
-              itemBuilder: (context, index) {
-                return _buildRestaurantItem(context, restaurants[index]);
-              },
-            );
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Text("Error Loading Data"),
+              );
+            } else if (snapshot.hasData) {
+              final List<Restaurant> restaurants =
+                  restaurantResponseFromJson(snapshot.data.toString())
+                      .restaurants;
+              return ListView.builder(
+                itemCount: restaurants.length,
+                itemBuilder: (context, index) {
+                  return _buildRestaurantItem(context, restaurants[index]);
+                },
+              );
+            } else {
+              return const Center(
+                child: Text("No data available"),
+              );
+            }
           },
         ),
       ),

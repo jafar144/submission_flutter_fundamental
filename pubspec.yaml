@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
 
   flutter_svg: ^2.0.10+1
+  flutter_native_splash: 2.4.1
 
 dev_dependencies:
   flutter_test:
@@ -22,3 +23,13 @@ flutter:
   assets:
     - assets/restaurant.json
     - images/
+
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+  image: images/splash.png
+  color: "#FFFFFF"
+  android_12:
+    image: images/splash.png
+    color: "#FFFFFF"
