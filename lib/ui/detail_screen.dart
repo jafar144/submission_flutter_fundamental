@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:submission_awal_flutter_fundamental/model/restaurant_response.dart';
+import 'package:provider/provider.dart';
+import 'package:submission_awal_flutter_fundamental/data/api/api_service.dart';
+import 'package:submission_awal_flutter_fundamental/data/response/detail_restaurant_response.dart';
+import 'package:submission_awal_flutter_fundamental/provider/detail_restaurant_provider.dart';
+import 'package:submission_awal_flutter_fundamental/utils/constants.dart';
+import 'package:submission_awal_flutter_fundamental/utils/result_state.dart';
 
 class DetailScreen extends StatefulWidget {
   static const routeName = '/restaurant_detail';
 
-  final Restaurant restaurant;
+  final String idRestaurant;
 
-  const DetailScreen({super.key, required this.restaurant});
+  const DetailScreen({super.key, required this.idRestaurant});
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -24,9 +29,35 @@ class _DetailScreenState extends State<DetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    final List<Drink> foods = widget.restaurant.menus.foods;
-    final List<Drink> drinks = widget.restaurant.menus.drinks;
+    return ChangeNotifierProvider<DetailRestaurantProvider>(
+      create: (_) => DetailRestaurantProvider(
+        widget.idRestaurant,
+        apiService: ApiService(),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Consumer<DetailRestaurantProvider>(
+          builder: (context, provider, _) {
+            switch (provider.state) {
+              case ResultState.loading:
+                return const Center(child: CircularProgressIndicator());
+              case ResultState.hasData:
+                return _buildDetailRestaurantScreen(
+                    provider.result.detailRestaurant);
+              case ResultState.noData:
+                return const Center(child: Text('No Data'));
+              case ResultState.error:
+                return const Center(child: Text('Error :0'));
+            }
+          },
+        ),
+      ),
+    );
+  }
 
+  Widget _buildDetailRestaurantScreen(DetailRestaurant restaurant) {
+    final foods = restaurant.menus.foods;
+    final drinks = restaurant.menus.drinks;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -35,13 +66,11 @@ class _DetailScreenState extends State<DetailScreen>
           children: [
             Stack(
               children: [
-                Hero(
-                  tag: widget.restaurant.pictureId,
-                  child: Image.network(
-                    widget.restaurant.pictureId,
-                    fit: BoxFit.cover,
-                    height: 250,
-                  ),
+                Image.network(
+                  Constants.imgUrlMedium + restaurant.pictureId,
+                  fit: BoxFit.cover,
+                  height: 250,
+                  width: double.infinity,
                 ),
                 SafeArea(
                   child: Padding(
@@ -99,7 +128,7 @@ class _DetailScreenState extends State<DetailScreen>
                             width: 5.0,
                           ),
                           Text(
-                            widget.restaurant.rating.toString(),
+                            restaurant.rating.toString(),
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
@@ -113,7 +142,7 @@ class _DetailScreenState extends State<DetailScreen>
                     height: 24,
                   ),
                   Text(
-                    widget.restaurant.name,
+                    restaurant.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 22,
@@ -186,7 +215,7 @@ class _DetailScreenState extends State<DetailScreen>
                       Padding(
                         padding: const EdgeInsets.only(left: 6.0),
                         child: Text(
-                          widget.restaurant.city,
+                          restaurant.city,
                           textAlign: TextAlign.start,
                           style: const TextStyle(
                             fontSize: 12,
@@ -233,7 +262,7 @@ class _DetailScreenState extends State<DetailScreen>
                                       ),
                                     ),
                                   ),
-                                  Text(widget.restaurant.description),
+                                  Text(restaurant.description),
                                 ],
                               ),
                             ),
@@ -273,7 +302,7 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
-  Widget _buildDrinksItem(BuildContext context, Drink drink) {
+  Widget _buildDrinksItem(BuildContext context, Category drink) {
     return Wrap(
       children: [
         Container(
