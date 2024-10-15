@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:submission_awal_flutter_fundamental/data/response/restaurant_response.dart';
 import 'package:submission_awal_flutter_fundamental/provider/restaurant_provider.dart';
-import 'package:submission_awal_flutter_fundamental/ui/detail_screen.dart';
 import 'package:submission_awal_flutter_fundamental/ui/search_screen.dart';
-import 'package:submission_awal_flutter_fundamental/utils/constants.dart';
 import 'package:submission_awal_flutter_fundamental/utils/result_state.dart';
 import 'package:submission_awal_flutter_fundamental/widgets/card_restaurant.dart';
 
@@ -40,14 +36,17 @@ class HomeScreen extends StatelessWidget {
           case ResultState.loading:
             return const Center(child: CircularProgressIndicator());
           case ResultState.hasData:
-            return ListView.builder(
-              itemCount: provider.result.restaurants.length,
-              itemBuilder: (context, index) {
-                return cardRestaurant(
-                  context,
-                  provider.result.restaurants[index],
-                );
-              },
+            return ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(overscroll: false),
+              child: ListView.builder(
+                itemCount: provider.result.restaurants.length,
+                itemBuilder: (context, index) {
+                  return cardRestaurant(
+                    context,
+                    provider.result.restaurants[index],
+                  );
+                },
+              ),
             );
           case ResultState.noData:
             return const Center(
@@ -55,7 +54,10 @@ class HomeScreen extends StatelessWidget {
             );
           case ResultState.error:
             return Center(
-              child: Text(provider.message),
+              child: Text(
+                provider.message,
+                textAlign: TextAlign.center,
+              ),
             );
         }
       },

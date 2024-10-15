@@ -57,30 +57,48 @@ class _SearchScreenState extends State<SearchScreen> {
                       color: Colors.grey,
                     ),
                   ),
-                  onSubmitted: (value) {
-                    searchProvider.searchRestaurant(value);
-                  },
+                  trailing: [
+                    IconButton(
+                      onPressed: () => searchProvider
+                          .searchRestaurant(_searchController.text),
+                      icon: const Icon(Icons.search),
+                    ),
+                  ],
                 ),
-                Consumer<SearchProvider>(builder: (context, provider, _) {
-                  switch (provider.state) {
-                    case ResultState.loading:
-                      return const Center(child: CircularProgressIndicator());
-                    case ResultState.hasData:
-                      return ListView.builder(
-                        itemBuilder: (context, index) {
-                          return Expanded(
-                            child: cardRestaurant(
-                                context, provider.results[index]),
-                          );
-                        },
-                        itemCount: provider.results.length,
-                      );
-                    case ResultState.noData:
-                      return const Center(child: Text('No Data'));
-                    case ResultState.error:
-                      return Center(child: Text(provider.message));
-                  }
-                })
+                const SizedBox(height: 16),
+                Expanded(
+                  child:
+                      Consumer<SearchProvider>(builder: (context, provider, _) {
+                    switch (provider.state) {
+                      case ResultState.loading:
+                        return const Center(child: CircularProgressIndicator());
+                      case ResultState.hasData:
+                        return ScrollConfiguration(
+                          behavior: const ScrollBehavior()
+                              .copyWith(overscroll: false),
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return cardRestaurant(
+                                  context, provider.results[index]);
+                            },
+                            itemCount: provider.results.length,
+                          ),
+                        );
+                      case ResultState.noData:
+                        return Center(
+                            child: Text(
+                          provider.message,
+                          textAlign: TextAlign.center,
+                        ));
+                      case ResultState.error:
+                        return Center(
+                            child: Text(
+                          provider.message,
+                          textAlign: TextAlign.center,
+                        ));
+                    }
+                  }),
+                )
               ],
             ),
           ),

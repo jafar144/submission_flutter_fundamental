@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:submission_awal_flutter_fundamental/data/response/restaurant_response.dart';
@@ -14,12 +15,11 @@ Widget cardRestaurant(BuildContext context, Restaurant restaurant) {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Image.network(
-            Constants.imgUrlMedium + restaurant.pictureId,
+          CachedNetworkImage(
+            imageUrl: Constants.imgUrlMedium + restaurant.pictureId,
             height: 130,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, _) =>
-                const Center(child: Icon(Icons.error)),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),

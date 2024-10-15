@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:submission_awal_flutter_fundamental/data/api/api_service.dart';
 import 'package:submission_awal_flutter_fundamental/data/response/restaurant_response.dart';
@@ -26,16 +28,20 @@ class RestaurantProvider extends ChangeNotifier {
       if (restaurants.restaurants.isEmpty) {
         _state = ResultState.noData;
         notifyListeners();
-        return _message = 'Empty Data';
+        return _message = 'Restaurant is empty. Please check another time';
       } else {
         _state = ResultState.hasData;
         notifyListeners();
         return _result = restaurants;
       }
+    } on SocketException catch (e) {
+      _state = ResultState.error;
+      notifyListeners();
+      return _message = e.message;
     } catch (e) {
       _state = ResultState.error;
       notifyListeners();
-      return _message = "Error --> $e";
+      return _message = "There is problem. Try Again: $e";
     }
   }
 }
