@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:submission_awal_flutter_fundamental/data/api/api_service.dart';
 import 'package:submission_awal_flutter_fundamental/provider/restaurant_provider.dart';
+import 'package:submission_awal_flutter_fundamental/ui/add_review_screen.dart';
 import 'package:submission_awal_flutter_fundamental/ui/detail_screen.dart';
 import 'package:submission_awal_flutter_fundamental/ui/home_screen.dart';
 import 'package:submission_awal_flutter_fundamental/ui/search_screen.dart';
@@ -27,6 +28,10 @@ class MainApp extends StatelessWidget {
                   ModalRoute.of(context)?.settings.arguments as String,
             ),
         SearchScreen.routeName: (context) => const SearchScreen(),
+        AddReviewScreen.routeName: (context) => AddReviewScreen(
+              idRestaurant:
+                  ModalRoute.of(context)?.settings.arguments as String,
+            ),
       },
     );
   }

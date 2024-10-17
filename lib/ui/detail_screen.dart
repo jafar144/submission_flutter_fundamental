@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:submission_awal_flutter_fundamental/data/api/api_service.dart';
 import 'package:submission_awal_flutter_fundamental/data/response/detail_restaurant_response.dart';
 import 'package:submission_awal_flutter_fundamental/provider/detail_restaurant_provider.dart';
+import 'package:submission_awal_flutter_fundamental/ui/add_review_screen.dart';
 import 'package:submission_awal_flutter_fundamental/utils/constants.dart';
 import 'package:submission_awal_flutter_fundamental/utils/result_state.dart';
 import 'package:submission_awal_flutter_fundamental/widgets/review_item.dart';
@@ -309,7 +310,11 @@ class _DetailScreenState extends State<DetailScreen>
                                       ),
                                     ),
                                     TextButton(
-                                      onPressed: () => debugPrint('Hehe'),
+                                      onPressed: () => Navigator.pushNamed(
+                                        context,
+                                        AddReviewScreen.routeName,
+                                        arguments: restaurant.id,
+                                      ),
                                       child: const Text(
                                         "Add reviews",
                                         style: TextStyle(
