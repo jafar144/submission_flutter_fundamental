@@ -28,14 +28,14 @@ class DetailRestaurantProvider extends ChangeNotifier {
     try {
       final detailRestaurant =
           await apiService.getDetailRestaurant(idRestaurant);
-      if (detailRestaurant == null) {
-        _state = ResultState.noData;
-        notifyListeners();
-        return _message = "No Data";
-      } else {
+      if (detailRestaurant.error == false) {
         _state = ResultState.hasData;
         notifyListeners();
         return _result = detailRestaurant;
+      } else {
+        _state = ResultState.noData;
+        notifyListeners();
+        return _message = 'Restaurant Not found';
       }
     } on SocketException catch (e) {
       _state = ResultState.error;

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:submission_awal_flutter_fundamental/data/api/dio_config.dart';
 import 'package:submission_awal_flutter_fundamental/data/response/add_review_response.dart';
 import 'package:submission_awal_flutter_fundamental/data/response/detail_restaurant_response.dart';
@@ -15,9 +14,6 @@ class ApiService {
     try {
       final response = await dioConfig.request('list', DioMethod.get);
       if (response.statusCode == 200) {
-        debugPrint('Berhasil masuk');
-        debugPrint(response.data.runtimeType.toString());
-        debugPrint('Response data ${response.data}');
         return RestaurantResponse.fromJson(response.data);
       } else {
         throw Exception(response.statusMessage);
@@ -88,7 +84,6 @@ class ApiService {
       String idRestaurant, String name, String review) async {
     var dioConfig = DioConfig();
     try {
-      debugPrint('API_SERVICE: BEFORE CALL');
       final response = await dioConfig.request(
         'review',
         DioMethod.post,
@@ -99,13 +94,9 @@ class ApiService {
           'review': review,
         },
       );
-      debugPrint('API_SERVICE: AFTER CALL');
       if (response.statusCode == 201) {
-        debugPrint('API_SERVICE: SUCESS CALL');
         return AddReviewResponse.fromJson(response.data);
       } else {
-        debugPrint('API_SERVICE: FAILED CALL');
-        debugPrint('${response.statusCode}: ${response.statusMessage}');
         throw Exception(response.statusMessage);
       }
     } on DioException catch (e) {
