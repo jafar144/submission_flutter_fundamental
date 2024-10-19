@@ -26,10 +26,14 @@ class DioConfig {
     formData,
   }) async {
     try {
-      final dio = Dio(BaseOptions(
-        baseUrl: baseUrl,
-        contentType: contentType ?? Headers.formUrlEncodedContentType,
-      ));
+      final dio = Dio(
+        BaseOptions(
+          baseUrl: baseUrl,
+          contentType: contentType ?? Headers.formUrlEncodedContentType,
+          connectTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5),
+        ),
+      );
       switch (method) {
         case DioMethod.post:
           return dio.post(

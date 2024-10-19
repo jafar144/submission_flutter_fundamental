@@ -23,24 +23,33 @@ class AddReviewProvider extends ChangeNotifier {
     _state = ResultState.loading;
     notifyListeners();
     try {
+      debugPrint('Yeay Masuk Try');
       final result = await apiService.addReview(idRestaurant, name, review);
+      debugPrint('Lamo nian jir nunggu result');
       if (result.error == false) {
+        debugPrint('Provider: Yeay ternyata masukk hasData');
         _state = ResultState.hasData;
+        _message = result.message;
         notifyListeners();
-        return _message = result.message;
+        return _message;
       } else {
+        debugPrint('Provider: Yahh,, ternyata masukk noData');
         _state = ResultState.noData;
+        _message = result.message;
         notifyListeners();
-        return _message = result.message;
+        return _message;
       }
     } on SocketException catch (e) {
+      debugPrint('Provider: Yahh,, ternyata masukk error');
       _state = ResultState.error;
+      _message = e.message;
       notifyListeners();
-      return _message = e.message;
+      return _message;
     } catch (e) {
       _state = ResultState.error;
+      _message = "There is problem. Try Again: $e";
       notifyListeners();
-      return _message = "There is problem. Try Again: $e";
+      return _message;
     }
   }
 }

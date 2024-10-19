@@ -88,16 +88,24 @@ class ApiService {
       String idRestaurant, String name, String review) async {
     var dioConfig = DioConfig();
     try {
-      final response = await dioConfig.request('review', DioMethod.post,
-          contentType: 'application/json',
-          param: {
-            'id': idRestaurant,
-            'name': name,
-            'review': review,
-          });
-      if (response.statusCode == 200) {
+      debugPrint('API_SERVICE: BEFORE CALL');
+      final response = await dioConfig.request(
+        'review',
+        DioMethod.post,
+        contentType: Headers.jsonContentType,
+        param: {
+          'id': idRestaurant,
+          'name': name,
+          'review': review,
+        },
+      );
+      debugPrint('API_SERVICE: AFTER CALL');
+      if (response.statusCode == 201) {
+        debugPrint('API_SERVICE: SUCESS CALL');
         return AddReviewResponse.fromJson(response.data);
       } else {
+        debugPrint('API_SERVICE: FAILED CALL');
+        debugPrint('${response.statusCode}: ${response.statusMessage}');
         throw Exception(response.statusMessage);
       }
     } on DioException catch (e) {

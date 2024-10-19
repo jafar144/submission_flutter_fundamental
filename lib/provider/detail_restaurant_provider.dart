@@ -10,18 +10,19 @@ class DetailRestaurantProvider extends ChangeNotifier {
   final String idRestaurant;
 
   DetailRestaurantProvider(this.idRestaurant, {required this.apiService}) {
-    _getDetailRestaurant(idRestaurant);
+    _state = ResultState.loading;
+    _result = null;
   }
 
   late ResultState _state;
-  late DetailRestaurantResponse _result;
+  late DetailRestaurantResponse? _result;
   String _message = "";
 
   ResultState get state => _state;
-  DetailRestaurantResponse get result => _result;
+  DetailRestaurantResponse? get result => _result;
   String get message => _message;
 
-  Future<dynamic> _getDetailRestaurant(String idRestaurant) async {
+  Future<dynamic> getDetailRestaurant(String idRestaurant) async {
     _state = ResultState.loading;
     notifyListeners();
     try {

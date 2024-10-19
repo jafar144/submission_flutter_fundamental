@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:submission_awal_flutter_fundamental/data/api/api_service.dart';
+import 'package:submission_awal_flutter_fundamental/provider/detail_restaurant_provider.dart';
 import 'package:submission_awal_flutter_fundamental/provider/restaurant_provider.dart';
 import 'package:submission_awal_flutter_fundamental/ui/add_review_screen.dart';
 import 'package:submission_awal_flutter_fundamental/ui/detail_screen.dart';
@@ -23,10 +24,17 @@ class MainApp extends StatelessWidget {
               create: (_) => RestaurantProvider(apiService: ApiService()),
               child: const HomeScreen(),
             ),
-        DetailScreen.routeName: (context) => DetailScreen(
-              idRestaurant:
-                  ModalRoute.of(context)?.settings.arguments as String,
+        DetailScreen.routeName: (context) {
+          final idRestaurant =
+              ModalRoute.of(context)?.settings.arguments as String;
+          return ChangeNotifierProvider(
+            create: (_) => DetailRestaurantProvider(
+              ModalRoute.of(context)?.settings.arguments as String,
+              apiService: ApiService(),
             ),
+            child: DetailScreen(idRestaurant: idRestaurant),
+          );
+        },
         SearchScreen.routeName: (context) => const SearchScreen(),
         AddReviewScreen.routeName: (context) => AddReviewScreen(
               idRestaurant:

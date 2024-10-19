@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:provider/provider.dart';
-import 'package:submission_awal_flutter_fundamental/data/api/api_service.dart';
 import 'package:submission_awal_flutter_fundamental/data/response/detail_restaurant_response.dart';
 import 'package:submission_awal_flutter_fundamental/provider/detail_restaurant_provider.dart';
 import 'package:submission_awal_flutter_fundamental/ui/add_review_screen.dart';
 import 'package:submission_awal_flutter_fundamental/utils/constants.dart';
+import 'package:submission_awal_flutter_fundamental/utils/helper.dart';
 import 'package:submission_awal_flutter_fundamental/utils/result_state.dart';
 import 'package:submission_awal_flutter_fundamental/widgets/review_item.dart';
 
@@ -23,38 +25,51 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  Object? resultFromAddReviewScreen;
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
   }
 
+  void onResume() {
+    debugPrint(resultFromAddReviewScreen.toString());
+    if (resultFromAddReviewScreen == false) return;
+    final currentContext = context;
+    if (currentContext.mounted) {
+      Provider.of<DetailRestaurantProvider>(currentContext, listen: false)
+          .getDetailRestaurant(widget.idRestaurant);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<DetailRestaurantProvider>(
-      create: (_) => DetailRestaurantProvider(
-        widget.idRestaurant,
-        apiService: ApiService(),
-      ),
+    return FocusDetector(
+      onFocusGained: onResume,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Consumer<DetailRestaurantProvider>(
           builder: (context, provider, _) {
-            switch (provider.state) {
-              case ResultState.loading:
-                return const Center(child: CircularProgressIndicator());
-              case ResultState.hasData:
-                return _buildDetailRestaurantScreen(
-                    provider.result.detailRestaurant);
-              case ResultState.noData:
-                return const Center(child: Text('No Data'));
-              case ResultState.error:
-                return Center(
-                  child: Text(
-                    provider.message,
-                    textAlign: TextAlign.center,
-                  ),
-                );
+            if (provider.state == ResultState.loading &&
+                provider.result == null) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (provider.state == ResultState.noData ||
+                provider.state == ResultState.error) {
+              return Center(
+                  child: Text(provider.message, textAlign: TextAlign.center));
+            } else if (provider.state == ResultState.hasData) {
+              return _buildDetailRestaurantScreen(
+                  provider.result?.detailRestaurant as DetailRestaurant);
+            } else {
+              return Stack(
+                children: [
+                  _buildDetailRestaurantScreen(
+                      provider.result?.detailRestaurant as DetailRestaurant),
+                  Container(
+                      color: const Color.fromARGB(25, 158, 158, 158),
+                      child: const Center(child: CircularProgressIndicator())),
+                ],
+              );
             }
           },
         ),
@@ -242,7 +257,7 @@ class _DetailScreenState extends State<DetailScreen>
                       controller: _tabController,
                       tabs: const [
                         Tab(text: "About"),
-                        Tab(text: "Makanan"),
+                        Tab(text: "Menu"),
                         Tab(text: "Review"),
                       ],
                     ),
@@ -283,14 +298,54 @@ class _DetailScreenState extends State<DetailScreen>
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
-                            child: GridView.count(
-                              crossAxisCount: 2,
-                              childAspectRatio: (1 / .3),
-                              shrinkWrap: true,
-                              children: List.generate(foods.length, (index) {
-                                return _buildDrinksItem(context, foods[index]);
-                              }),
+                            padding:
+                                const EdgeInsets.only(top: 16.0, bottom: 16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Foods',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 16.0),
+                                  child: SizedBox(
+                                    height: 60,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: foods.length,
+                                        itemBuilder: (context, index) {
+                                          return _buildMenusItem(
+                                              context, foods[index]);
+                                        }),
+                                  ),
+                                ),
+                                const Text(
+                                  'Drinks',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 16.0),
+                                  child: SizedBox(
+                                    height: 60,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: foods.length,
+                                        itemBuilder: (context, index) {
+                                          return _buildMenusItem(
+                                              context, drinks[index]);
+                                        }),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Column(
@@ -310,11 +365,19 @@ class _DetailScreenState extends State<DetailScreen>
                                       ),
                                     ),
                                     TextButton(
-                                      onPressed: () => Navigator.pushNamed(
-                                        context,
-                                        AddReviewScreen.routeName,
-                                        arguments: restaurant.id,
-                                      ),
+                                      onPressed: () async {
+                                        resultFromAddReviewScreen =
+                                            await Navigator.pushNamed(
+                                          context,
+                                          AddReviewScreen.routeName,
+                                          arguments: restaurant.id,
+                                        );
+                                        if (!context.mounted) return;
+                                        if (resultFromAddReviewScreen == true) {
+                                          showToast(
+                                              'Berhasil menambahkan review');
+                                        }
+                                      },
                                       child: const Text(
                                         "Add reviews",
                                         style: TextStyle(
@@ -336,8 +399,11 @@ class _DetailScreenState extends State<DetailScreen>
                                     itemCount:
                                         restaurant.customerReviews.length,
                                     itemBuilder: (context, index) {
+                                      final reversedReviews = restaurant
+                                          .customerReviews.reversed
+                                          .toList();
                                       return reviewItem(
-                                        restaurant.customerReviews[index],
+                                        reversedReviews[index],
                                       );
                                     },
                                   ),
@@ -358,25 +424,28 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
-  Widget _buildDrinksItem(BuildContext context, Category drink) {
-    return Wrap(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: const BoxDecoration(
-            color: Color(0xFF5d48c8),
-            borderRadius: BorderRadius.all(
-              Radius.circular(25),
+  Widget _buildMenusItem(BuildContext context, Category drink) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: Wrap(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: const BoxDecoration(
+              color: Color(0xFF5d48c8),
+              borderRadius: BorderRadius.all(
+                Radius.circular(25),
+              ),
+            ),
+            child: Text(
+              drink.name,
+              style: const TextStyle(
+                color: Colors.white,
+              ),
             ),
           ),
-          child: Text(
-            drink.name,
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
