@@ -1,3 +1,5 @@
+import 'package:submission_awal_flutter_fundamental/data/response/detail_restaurant_response.dart';
+
 class RestaurantResponse {
   final bool error;
   final String message;
@@ -19,6 +21,13 @@ class RestaurantResponse {
         restaurants: List<Restaurant>.from(
             json["restaurants"].map((x) => Restaurant.fromJson(x))),
       );
+
+  Map<String, dynamic> toJson() => {
+        "error": error,
+        "message": message,
+        "count": count,
+        "restaurants": List<dynamic>.from(restaurants.map((x) => x.toJson())),
+      };
 }
 
 class Restaurant {
@@ -45,5 +54,24 @@ class Restaurant {
         pictureId: json["pictureId"],
         city: json["city"],
         rating: json["rating"]?.toDouble(),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "description": description,
+        "pictureId": pictureId,
+        "city": city,
+        "rating": rating,
+      };
+
+  factory Restaurant.fromDetailRestaurant(DetailRestaurant detailRestaurant) =>
+      Restaurant(
+        id: detailRestaurant.id,
+        name: detailRestaurant.name,
+        description: detailRestaurant.description,
+        pictureId: detailRestaurant.pictureId,
+        city: detailRestaurant.city,
+        rating: detailRestaurant.rating,
       );
 }

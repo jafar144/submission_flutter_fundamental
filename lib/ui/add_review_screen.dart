@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:submission_awal_flutter_fundamental/common/navigation.dart';
 import 'package:submission_awal_flutter_fundamental/data/api/api_service.dart';
 import 'package:submission_awal_flutter_fundamental/provider/add_review_provider.dart';
 import 'package:submission_awal_flutter_fundamental/utils/constants.dart';
@@ -39,116 +40,112 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<AddReviewProvider>(
-      create: (_) => AddReviewProvider(
-        apiService: ApiService(),
-      ),
-      child: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (didPop, result) async {
-          if (didPop) return;
-          Navigator.pop(context, false);
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: () => Navigator.pop(context, false),
-              icon: const Icon(Icons.navigate_before),
-            ),
-            title: const Text('Add Review'),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        Navigation.back(false);
+        // Navigator.pop(context, false);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            // onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigation.back(false),
+            icon: const Icon(Icons.navigate_before),
           ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      hintText: 'Enter your username',
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      ),
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Constants.primaryPurple),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Constants.primaryPurple),
-                      ),
+          title: const Text('Add Review'),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
+                    hintText: 'Enter your username',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
                     ),
-                    onChanged: (value) => validateInput(),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _reviewController,
-                    decoration: const InputDecoration(
-                      labelText: 'Reviews',
-                      hintText: 'Enter your reviews',
-                      hintStyle: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      ),
-                      prefixIcon: Icon(Icons.reviews),
-                      border: OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Constants.primaryPurple),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Constants.primaryPurple),
-                      ),
+                    prefixIcon: Icon(Icons.person),
+                    border: OutlineInputBorder(),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Constants.primaryPurple),
                     ),
-                    onChanged: (value) => validateInput(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Constants.primaryPurple),
+                    ),
                   ),
-                  const SizedBox(
-                    height: 16,
+                  onChanged: (value) => validateInput(),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _reviewController,
+                  decoration: const InputDecoration(
+                    labelText: 'Reviews',
+                    hintText: 'Enter your reviews',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                    prefixIcon: Icon(Icons.reviews),
+                    border: OutlineInputBorder(),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Constants.primaryPurple),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Constants.primaryPurple),
+                    ),
                   ),
-                  Consumer<AddReviewProvider>(
-                    builder: (ctx, provider, _) {
-                      return ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 50)),
-                        onPressed: _isBtnEnabled
-                            ? () async {
-                                await provider.addReview(
-                                    widget.idRestaurant,
-                                    _nameController.text,
-                                    _reviewController.text);
-                                switch (provider.state) {
-                                  case ResultState.loading:
-                                    setState(() {
-                                      _isBtnEnabled = false;
-                                    });
-                                    debugPrint('LOADING..........');
-                                    break;
-                                  case ResultState.hasData:
-                                    debugPrint('HAS DATA..........');
-                                    if (context.mounted) {
-                                      Navigator.pop(context, true);
-                                    }
-                                    break;
-                                  case ResultState.noData:
-                                    debugPrint('NO DATA..........');
-                                    showToast(provider.message);
-                                    break;
-                                  case ResultState.error:
-                                    showToast(provider.message);
-                                    debugPrint('ERROR..........');
-                                    break;
-                                }
+                  onChanged: (value) => validateInput(),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Consumer<AddReviewProvider>(
+                  builder: (ctx, provider, _) {
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50)),
+                      onPressed: _isBtnEnabled
+                          ? () async {
+                              await provider.addReview(widget.idRestaurant,
+                                  _nameController.text, _reviewController.text);
+                              switch (provider.state) {
+                                case ResultState.loading:
+                                  setState(() {
+                                    _isBtnEnabled = false;
+                                  });
+                                  debugPrint('LOADING..........');
+                                  break;
+                                case ResultState.hasData:
+                                  debugPrint('HAS DATA..........');
+                                  if (context.mounted) {
+                                    // Navigator.pop(context, true);
+                                    Navigation.back(true);
+                                  }
+                                  break;
+                                case ResultState.noData:
+                                  debugPrint('NO DATA..........');
+                                  showToast(provider.message);
+                                  break;
+                                case ResultState.error:
+                                  showToast(provider.message);
+                                  debugPrint('ERROR..........');
+                                  break;
                               }
-                            : null,
-                        child: const Text('Send'),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                            }
+                          : null,
+                      child: const Text('Send'),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ),

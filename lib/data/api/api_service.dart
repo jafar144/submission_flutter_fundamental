@@ -8,7 +8,7 @@ import 'package:submission_awal_flutter_fundamental/data/response/restaurant_res
 import 'package:submission_awal_flutter_fundamental/data/response/search_response.dart';
 
 class ApiService {
-  // [GET] All Restaurant
+  /// [GET] All Restaurant
   Future<RestaurantResponse> getRestaurants() async {
     var dioConfig = DioConfig();
     try {
@@ -30,7 +30,7 @@ class ApiService {
     }
   }
 
-  // [GET] Detail Restaurant
+  /// [GET] Detail Restaurant
   Future<DetailRestaurantResponse> getDetailRestaurant(
       String idRestaurant) async {
     var dioConfig = DioConfig();
@@ -54,7 +54,7 @@ class ApiService {
     }
   }
 
-  // [GET] Search Restaurant
+  /// [GET] Search Restaurant
   Future<SearchRestaurantResponse> searchRestaurant(String query) async {
     var dioConfig = DioConfig();
     try {
@@ -80,6 +80,7 @@ class ApiService {
     }
   }
 
+  /// [POST] Add Review Restaurant
   Future<AddReviewResponse> addReview(
       String idRestaurant, String name, String review) async {
     var dioConfig = DioConfig();

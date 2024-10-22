@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:provider/provider.dart';
+import 'package:submission_awal_flutter_fundamental/common/navigation.dart';
 import 'package:submission_awal_flutter_fundamental/data/response/detail_restaurant_response.dart';
+import 'package:submission_awal_flutter_fundamental/data/response/restaurant_response.dart';
+import 'package:submission_awal_flutter_fundamental/provider/database_provider.dart';
 import 'package:submission_awal_flutter_fundamental/provider/detail_restaurant_provider.dart';
 import 'package:submission_awal_flutter_fundamental/ui/add_review_screen.dart';
 import 'package:submission_awal_flutter_fundamental/utils/constants.dart';
@@ -98,14 +101,57 @@ class _DetailScreenState extends State<DetailScreen>
                   SafeArea(
                     child: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(Icons.arrow_back),
-                        ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: IconButton(
+                              onPressed: () {
+                                // Navigator.pop(context);
+                                Navigation.back();
+                              },
+                              icon: const Icon(Icons.arrow_back),
+                            ),
+                          ),
+                          Consumer<DatabaseProvider>(
+                            builder: (context, provider, child) {
+                              return FutureBuilder(
+                                future:
+                                    provider.isFavorite(widget.idRestaurant),
+                                builder: (context, snapshot) {
+                                  var isFavorite = snapshot.data ?? false;
+                                  return isFavorite
+                                      ? CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          child: IconButton(
+                                            onPressed: () {
+                                              provider.deleteFavorite(
+                                                widget.idRestaurant,
+                                              );
+                                            },
+                                            icon: const Icon(Icons.favorite),
+                                          ),
+                                        )
+                                      : CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          child: IconButton(
+                                            onPressed: () {
+                                              provider.addFavorite(
+                                                Restaurant.fromDetailRestaurant(
+                                                  restaurant,
+                                                ),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                                Icons.favorite_border),
+                                          ),
+                                        );
+                                },
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -366,10 +412,14 @@ class _DetailScreenState extends State<DetailScreen>
                                     TextButton(
                                       onPressed: () async {
                                         resultFromAddReviewScreen =
-                                            await Navigator.pushNamed(
-                                          context,
+                                            //     await Navigator.pushNamed(
+                                            //   context,
+                                            //   AddReviewScreen.routeName,
+                                            //   arguments: restaurant.id,
+                                            // );
+                                            await Navigation.intentWithData(
                                           AddReviewScreen.routeName,
-                                          arguments: restaurant.id,
+                                          restaurant.id,
                                         );
                                         if (!context.mounted) return;
                                         if (resultFromAddReviewScreen == true) {
