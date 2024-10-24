@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:submission_awal_flutter_fundamental/common/navigation.dart';
 import 'package:submission_awal_flutter_fundamental/data/response/restaurant_response.dart';
 import 'package:submission_awal_flutter_fundamental/ui/detail_screen.dart';
 import 'package:submission_awal_flutter_fundamental/utils/constants.dart';
@@ -136,7 +137,9 @@ Widget cardRestaurant(BuildContext context, Restaurant restaurant) {
         ],
       ),
     ),
-    onTap: () => Navigator.pushNamed(context, DetailScreen.routeName,
-        arguments: restaurant.id),
+    // onTap: () => Navigator.pushNamed(context, DetailScreen.routeName,
+    //     arguments: restaurant.id),
+    onTap: () =>
+        Navigation.intentWithData(DetailScreen.routeName, restaurant.id),
   );
 }

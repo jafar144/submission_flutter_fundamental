@@ -7,7 +7,7 @@ class PreferencesHelper {
 
   static const dailyReminder = 'DAILY_REMINDER';
 
-  void setDailyReminder(bool isReminder) async {
+  Future setDailyReminder(bool isReminder) async {
     final prefs = await sharedPreferences;
     prefs.setBool(dailyReminder, isReminder);
   }

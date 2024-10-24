@@ -14,14 +14,16 @@ class PreferencesProvider extends ChangeNotifier {
   bool _isDailyReminder = false;
   bool get isDailyReminder => _isDailyReminder;
 
-  void _getDailyReminderPreferences() async {
+  Future _getDailyReminderPreferences() async {
     _isDailyReminder = await preferencesHelper.isDailyReminder;
     notifyListeners();
   }
 
   Future<bool> enableDailyReminder(bool value) async {
-    preferencesHelper.setDailyReminder(value);
-    _getDailyReminderPreferences();
+    debugPrint('Nilai yang diberikan switch ke enable: $value');
+    await preferencesHelper.setDailyReminder(value);
+    await _getDailyReminderPreferences();
+    debugPrint('Sekarang nilai _isDailyReminder: $_isDailyReminder');
 
     if (_isDailyReminder) {
       debugPrint('Penjadwalan notif restaurant berhasil diaktifkan');

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -71,22 +72,28 @@ class NotificationHelper {
     );
 
     var titleNotification = "<b>Recommendation Restaurant</b>";
-    var titleNews = restaurant.restaurants[0].name;
+    var randomRestaurant = getRandomRestaurant(restaurant);
+    var titleNews = randomRestaurant.name;
 
     await flutterLocalNotificationsPlugin.show(
       0,
       titleNotification,
       titleNews,
       platformChannelSpesifics,
-      payload: json.encode(restaurant.toJson()),
+      payload: json.encode(randomRestaurant.toJson()),
     );
   }
 
   void configureSelectNotificationSubject(String route) {
     selectNotificationSubject.stream.listen((String payload) async {
-      var data = RestaurantResponse.fromJson(json.decode(payload));
-      var restaurant = data.restaurants[0];
+      var data = Restaurant.fromJson(json.decode(payload));
+      var restaurant = data.id;
       Navigation.intentWithData(route, restaurant);
     });
+  }
+
+  Restaurant getRandomRestaurant(RestaurantResponse restaurantResponse) {
+    var restaurants = restaurantResponse.restaurants;
+    return restaurants[Random().nextInt(restaurants.length)];
   }
 }

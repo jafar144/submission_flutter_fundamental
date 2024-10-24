@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:submission_awal_flutter_fundamental/ui/detail_screen.dart';
 import 'package:submission_awal_flutter_fundamental/ui/favorite_screen.dart';
 import 'package:submission_awal_flutter_fundamental/ui/list_restaurant_screen.dart';
 import 'package:submission_awal_flutter_fundamental/ui/setting_screen.dart';
+import 'package:submission_awal_flutter_fundamental/utils/notification_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -13,6 +15,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final NotificationHelper _notificationHelper = NotificationHelper();
+
   int _bottomNavigationIndex = 0;
 
   @override
@@ -51,4 +55,17 @@ class _HomeScreenState extends State<HomeScreen> {
     const FavoriteScreen(),
     const SettingScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationHelper
+        .configureSelectNotificationSubject(DetailScreen.routeName);
+  }
+
+  @override
+  void dispose() {
+    selectNotificationSubject.close();
+    super.dispose();
+  }
 }

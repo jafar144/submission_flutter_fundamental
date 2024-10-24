@@ -108,7 +108,6 @@ class _DetailScreenState extends State<DetailScreen>
                             backgroundColor: Colors.white,
                             child: IconButton(
                               onPressed: () {
-                                // Navigator.pop(context);
                                 Navigation.back();
                               },
                               icon: const Icon(Icons.arrow_back),
@@ -412,14 +411,10 @@ class _DetailScreenState extends State<DetailScreen>
                                     TextButton(
                                       onPressed: () async {
                                         resultFromAddReviewScreen =
-                                            //     await Navigator.pushNamed(
-                                            //   context,
-                                            //   AddReviewScreen.routeName,
-                                            //   arguments: restaurant.id,
-                                            // );
-                                            await Navigation.intentWithData(
+                                            await Navigator.pushNamed(
+                                          context,
                                           AddReviewScreen.routeName,
-                                          restaurant.id,
+                                          arguments: restaurant.id,
                                         );
                                         if (!context.mounted) return;
                                         if (resultFromAddReviewScreen == true) {

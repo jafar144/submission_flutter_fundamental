@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -10,5 +10,7 @@ class Navigation {
   static intentWithoutData(String routeName) =>
       navigatorKey.currentState?.pushNamed(routeName);
 
-  static back([dynamic result]) => navigatorKey.currentState?.pop(result);
+  static backWithData(bool result) => navigatorKey.currentState?.pop(result);
+
+  static back() => navigatorKey.currentState?.pop();
 }

@@ -20,7 +20,6 @@ class ListRestaurantScreen extends StatelessWidget {
             padding: const EdgeInsets.only(right: 16.0),
             child: InkWell(
               child: const Icon(Icons.search),
-              // onTap: () => Navigator.pushNamed(context, SearchScreen.routeName),
               onTap: () => Navigation.intentWithoutData(SearchScreen.routeName),
             ),
           ),

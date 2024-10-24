@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:submission_awal_flutter_fundamental/common/navigation.dart';
-import 'package:submission_awal_flutter_fundamental/data/api/api_service.dart';
 import 'package:submission_awal_flutter_fundamental/provider/add_review_provider.dart';
 import 'package:submission_awal_flutter_fundamental/utils/constants.dart';
 import 'package:submission_awal_flutter_fundamental/utils/helper.dart';
@@ -44,14 +43,12 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        Navigation.back(false);
-        // Navigator.pop(context, false);
+        Navigator.pop(context, false);
       },
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            // onPressed: () => Navigator.pop(context, false),
-            onPressed: () => Navigation.back(false),
+            onPressed: () => Navigator.pop(context, false),
             icon: const Icon(Icons.navigate_before),
           ),
           title: const Text('Add Review'),
@@ -114,8 +111,11 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                           minimumSize: const Size(double.infinity, 50)),
                       onPressed: _isBtnEnabled
                           ? () async {
-                              await provider.addReview(widget.idRestaurant,
-                                  _nameController.text, _reviewController.text);
+                              await provider.addReview(
+                                widget.idRestaurant,
+                                _nameController.text,
+                                _reviewController.text,
+                              );
                               switch (provider.state) {
                                 case ResultState.loading:
                                   setState(() {
@@ -126,8 +126,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
                                 case ResultState.hasData:
                                   debugPrint('HAS DATA..........');
                                   if (context.mounted) {
-                                    // Navigator.pop(context, true);
-                                    Navigation.back(true);
+                                    Navigator.pop(context, true);
                                   }
                                   break;
                                 case ResultState.noData:
